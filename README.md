@@ -1,7 +1,7 @@
 [![license](https://img.shields.io/github/license/Touchwonders/transition.svg)](https://github.com/Touchwonders/Transition/blob/master/LICENSE) [![platform](https://cocoapod-badges.herokuapp.com/p/Transition/badge.png)]()
 # freehandDrawingOnMap
 
-Simple project how to draw custom polygons on a map (Google) with the touch of a finger.
+Simple project of how to draw custom polygons on a map (Google) with the touch of a finger and determine markers that are inside the polygon area.
 
 ![](/demo.png)
 
