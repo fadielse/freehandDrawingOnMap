@@ -15,10 +15,10 @@ PODS:
     - GoogleMaps
   - Google-Maps-iOS-Utils/QuadTree (3.0.2):
     - GoogleMaps
-  - GoogleMaps (3.8.0):
-    - GoogleMaps/Maps (= 3.8.0)
-  - GoogleMaps/Base (3.8.0)
-  - GoogleMaps/Maps (3.8.0):
+  - GoogleMaps (3.7.0):
+    - GoogleMaps/Maps (= 3.7.0)
+  - GoogleMaps/Base (3.7.0)
+  - GoogleMaps/Maps (3.7.0):
     - GoogleMaps/Base
 
 DEPENDENCIES:
@@ -32,7 +32,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Google-Maps-iOS-Utils: bfc24e492f3a88a2dffec1b6e0a5bd86fc49486f
-  GoogleMaps: 7c8d66d70e4e8c300f43a7219d8fdaad7b325a9a
+  GoogleMaps: 55da829c68aa931f3ae982b9e341cc2f3d89c587
 
 PODFILE CHECKSUM: 901956e32d4b3751f8a742de65f2216c1807731f
 

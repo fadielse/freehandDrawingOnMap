@@ -13,22 +13,16 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var mapView: GMSMapView!
     
+    let dummyLocation = CLLocationCoordinate2D(latitude: CLLocationDegrees(-6.220544), longitude: CLLocationDegrees(106.919685))
+    
     lazy var canvasView: CanvasView = {
-        
         var overlayView = CanvasView(frame: self.mapView.frame)
         overlayView.isUserInteractionEnabled = true
         overlayView.delegate = self
         return overlayView
-        
     }()
     
-    let dummyLocation = CLLocationCoordinate2D(latitude: CLLocationDegrees(-6.220544), longitude: CLLocationDegrees(106.919685))
-    
-    var isDrawing: Bool = false {
-        didSet {
-            print("Drawing mode: \(isDrawing)")
-        }
-    }
+    var isDrawing: Bool = false
     var locations: [CLLocation] = [] {
         didSet {
             generateMarkers()
@@ -48,18 +42,12 @@ class ViewController: UIViewController {
     
     @IBAction func buttonDrawTapped(_ sender: UIButton) {
         isDrawing = !isDrawing
-        
         if isDrawing {
             sender.setImage(#imageLiteral(resourceName: "ic-cancel"), for: .normal)
-            mapView.addSubview(canvasView)
+            mapView.addSubview(canvasView) /// Prepare to drawing
         } else {
             sender.setImage(#imageLiteral(resourceName: "ic-draw"), for: .normal)
-            userDrawablePolygons.removeAll()
-            markersInsideShape.removeAll()
-            markersInsideShape.removeAll()
-            randomMarkers.removeAll()
-            mapView.clear()
-            generateMarkers()
+            resetMapView()
         }
     }
     
@@ -68,6 +56,7 @@ class ViewController: UIViewController {
             let position = location.coordinate
             let marker = GMSMarker(position: position)
             marker.title = "Location: \(position.latitude), \(position.longitude)"
+            marker.icon = #imageLiteral(resourceName: "ic-pin")
             marker.map = mapView
             randomMarkers.append(marker)
         }
@@ -95,32 +84,39 @@ class ViewController: UIViewController {
             
             items.append(location)
         }
+        
         return items
+    }
+    
+    func resetMapView() {
+        userDrawablePolygons.removeAll()
+        markersInsideShape.removeAll()
+        markersInsideShape.removeAll()
+        randomMarkers.removeAll()
+        mapView.clear()
+        generateMarkers()
     }
     
     func createPolygonFromTheDrawablePoints() {
         let numberOfPoints = self.drawCoordinates.count
         
-        //do not draw in mapview a single point
+        /// Do not draw in mapview a single point
         if numberOfPoints > 2 {
             addPolyGonInMapView(drawableLoc: drawCoordinates)
-        } else {
-//            self.drawActn(self.drawButton)
+            drawCoordinates = []
+            self.canvasView.image = nil
+            self.canvasView.removeFromSuperview()
         }
-        
-        drawCoordinates = []
-        self.canvasView.image = nil
-        self.canvasView.removeFromSuperview()
     }
     
-    func addPolyGonInMapView( drawableLoc:[CLLocationCoordinate2D]) {
-        
+    func addPolyGonInMapView(drawableLoc: [CLLocationCoordinate2D]) {
         isDrawing = true
         let path = GMSMutablePath()
-        for loc in drawableLoc{
+        
+        for loc in drawableLoc {
             path.add(loc)
-            
         }
+        
         let newpolygon = GMSPolygon(path: path)
         newpolygon.strokeWidth = 3
         newpolygon.strokeColor = UIColor(red: 20.0/255.0, green: 119.0/255.0, blue: 234.0/255.0, alpha: 0.75)
@@ -130,7 +126,7 @@ class ViewController: UIViewController {
         
         if drawableLoc.count > 2 {
             let coordinateBounds = GMSCoordinateBounds(path: newpolygon.path!)
-            mapView.animate(with: .fit(coordinateBounds))
+            mapView.animate(with: .fit(coordinateBounds)) /// Adjust map zoom to the polygon that has been drawn to the screen
         }
     }
     
@@ -142,6 +138,7 @@ class ViewController: UIViewController {
         let myPolygon = userDrawablePolygons[0].path
         markersInsideShape.removeAll()
         
+        /// Validate all markers that are not included in the polygon and delete from the map
         for marker in randomMarkers {
             if (GMSGeometryContainsLocation(marker.position, myPolygon!, true)) {
                 markersInsideShape.append(marker)
@@ -155,7 +152,8 @@ class ViewController: UIViewController {
 // MARK: GET DRAWABLE COORDINATES
 
 extension ViewController: NotifyTouchEvents {
-    func touchBegan(touch: UITouch){
+    
+    func touchBegan(touch: UITouch) {
         self.drawCoordinates.append(translateCoordinate(withTouch: touch))
     }
     
@@ -165,7 +163,9 @@ extension ViewController: NotifyTouchEvents {
     
     func touchEnded(touch: UITouch) {
         self.drawCoordinates.append(translateCoordinate(withTouch: touch))
+        /// 1
         createPolygonFromTheDrawablePoints()
+        /// 2
         getMarkerInsidePolygon()
     }
     
