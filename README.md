@@ -5,6 +5,8 @@ Simple project of how to draw custom polygons on a map (Google) with the touch o
 
 ![](/demo.png)
 
+[Demo Video](https://www.youtube.com/watch?v=Uc8POaysj-A)
+
 ## Author
 <p>
 	<img src="https://avatars3.githubusercontent.com/u/15564979?s=460&v=4" width="100" height="100">
